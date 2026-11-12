@@ -2,8 +2,13 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<!-- Google Analytics / Tag Manager -->
-<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-WMK9FHGQ"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); </script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WMK9FHGQ');</script>
+<!-- End Google Tag Manager -->
 <title>Codex Structura v2.3 – Standards Timeline &amp; Lineage</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Timeline and lineage explorer for historic British structural standards and codes of practice, to support the reuse of existing structures.">
@@ -361,6 +366,9 @@ button.on:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--neon2) 55%,transpar
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WMK9FHGQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <header id="top">
   <a id="home" href="https://ankacha.github.io/" title="Home – ankacha.github.io" aria-label="Home (ankacha.github.io)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V20h5v-5.5h3V20h5V9.5"/></svg></a>
   <button id="fT" class="ghost" title="Filters"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
@@ -1289,7 +1297,7 @@ function renderAbout(){
 
   <h2>Version history</h2>
   <table class="kv">
-    <tr><td>v2.3 · ${esc(fmtD(META.applied))}</td><td>Lineage and data checks: a new <a href="#checks">Checks</a> page listing merges, splits, dead ends, one-sided links, coverage gaps, transition overlaps, date-order problems, orphans and records with missing fields, each with CSV export. Flags and a record-completeness meter in the details panel; merge, split and dead-end badges and gap, overlap and one-sided labels in the lineage graph; a filter to show only standards flagged by a check. Fuzzy search in the search box and text filter, matching misspellings, plurals and older terms (e.g. steelwork ↔ steel, brickwork ↔ masonry). The CSV export gains data-check and completeness columns.</td></tr>
+    <tr><td>v2.3 · ${esc(fmtD(META.applied))}</td><td>Lineage and data checks: a new <a href="#checks">Checks</a> page listing merges, splits, dead ends, one-sided links, coverage gaps, transition overlaps, date-order problems, orphans and records with missing fields, each with CSV export. Flags and a record-completeness meter in the details panel; merge, split and dead-end badges and gap, overlap and one-sided labels in the lineage graph; a filter to show only standards flagged by a check. Fuzzy search in the search box and text filter, matching misspellings, plurals and older terms (e.g. steelwork ↔ steel, brickwork ↔ masonry). The CSV export gains data-check and completeness columns. Google Tag Manager now loads with the standard container snippet, so tags fire (corrected 12 November 2026).</td></tr>
     <tr><td>v2.2 · 9 November 2026</td><td>Home button (⌂) at the top left, before the Filters button, returns to ankacha.github.io (in a new tab when Codex Structura is running inside another page). Google Analytics (Tag Manager) added.</td></tr>
     <tr><td>v2.1 · 3 November 2026</td><td>Welcome guide restyled to match Frame Pusher: an illustrated quick guide in a dialog over the app, in six steps, with shortcut strip. Light mode: selected segmented buttons (Published / In force) keep their highlight and readable text; selected, hovered and focused buttons share one style in both themes.</td></tr>
     <tr><td>v2.0 · 31 October 2026</td><td>Welcome and About pages, version and data stamps, report builder (PDF, Word, Markdown, HTML, CSV) with lineage diagrams and construction-year checks, copyable references, and adding filtered sets to the report.</td></tr>

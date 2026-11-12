@@ -1,75 +1,130 @@
-# Frame Pusher – source modules
+# Codex Structura
 
-Frame Pusher is a live 2D frame analyser that runs in the browser: draw a structure, support it, push and pull it, and watch the deflected shape, bending moment, shear, axial force and reactions update as you go. It is for checking structural behaviour and for teaching the finite element (direct stiffness) method. It is analysis software only: there are no design-code checks, load cases or load combinations.
+**v2.3 "Integrity"** · A timeline and lineage explorer for historic British structural standards and codes of practice.
 
-Current version: **v2.15 "Workings"**.
+Codex Structura helps structural engineers who are assessing, adapting and reusing existing structures. It shows which British Standards and Codes of Practice were in force when a building was designed and built, and how each one was revised, replaced or withdrawn afterwards.
 
-## Layout (since v2.4)
+Live site: <https://ankacha.github.io/>
 
-The published page is a single self-contained HTML file. It is built from the source files below, which are kept in the "Frame Pusher" Project's files under `frame-pusher-src/`. They are not in the artifact, so the artifact downloads as one HTML file. Each version is published as its own artifact.
+> **Always verify.** Codex Structura is a research aid, not an authoritative source. Its data is an export of the BSI catalogue taken at one point in time, and it can contain gaps, transcription errors and status changes made after the export. Before you rely on a designation, edition, publication or withdrawal date, amendment or replacement in a design, assessment, calculation pack or report, confirm it against the [BSI catalogue (BSI Knowledge)](https://knowledge.bsigroup.com/) or the published document. Codex Structura is not affiliated with or endorsed by BSI.
 
-| Path | What it holds |
+---
+
+## Features
+
+### Timeline
+- Each standard is a bar that runs from its publication date to its withdrawal date. The bar's colour shows its status: current, superseded or withdrawn.
+- How a bar ends tells you how reliable its end date is:
+  - a solid end is a recorded withdrawal;
+  - a dashed end is inferred from the date the replacement was published;
+  - a fading end means no date is known.
+- Lanes group standards by ICS group, ICS sub-group, industry sector or status, or put everything in a single lane. Bars can be coloured by status or by category.
+- A histogram of publications runs along the year axis. Drag along the axis to select a range of years, or click it to see what was in force in a single year.
+
+### Filters
+- **Text filter:** every word must match the designation, title, abstract or descriptors. It uses fuzzy matching unless you turn it off.
+- **Dates:** filter by *Published* within a range, or *In force* at any time within it. **In force on** shows a single year, such as a construction year.
+- **Status**, **ICS category tree** (with counts) and **industry sector**.
+- **Lineage & data checks:** show only the standards flagged by one of the checks below.
+
+### Lineage graph
+- Shows predecessors and successors of the selected standard. **Direct line** shows only its ancestors and descendants; **Whole family** shows every standard connected to it through any replacement link.
+- **Infer editions** (optional, drawn dashed) links consecutive editions that share a designation, such as BS 449:1948 → BS 449:1959, where the data records no link between them.
+- Documents referenced in the data but missing from the export appear as dashed "not in dataset" boxes.
+- Badges mark **merges**, **splits** and **dead ends**. Edges carry labels for **gaps**, **⇆ overlaps** and **one-sided** links.
+
+### Lineage & data checks (new in v2.3)
+The **Checks** page runs nine checks over the dataset. Each check comes with a list you can click through, a CSV export and, where it applies, a *Show on timeline* filter.
+
+| Check | Meaning |
 |---|---|
-| `page.html` | page shell: head, markup, and one `<style>` and one `<script>` element holding `/*@include path*/` markers |
-| `css/` | seventeen style sheets, in cascade order: base, v1.21 theme, v1.24 neon, v1.26 layout, v2.2 popups/flyouts, v2.5 welcome guide, v2.6 loads, v2.7 example gallery, v2.8 save / open files, v2.9 tapered members, v2.9.1 member inspector, v2.10 member end releases, v2.11 unstable warning and home button, v2.12 Labels control, v2.13 node inspector, inspector tab and theme button, v2.14 mechanism panel and snapshot, v2.15 integration chain, energy, indeterminacy, solve stepper and unit-load panels |
-| `js/` | twenty-eight script modules, in the run order listed in `page.html`: 01 setup … 13 report, 13b report decluttering (v2.12), 13a load direction / self-weight, 14 start-up, 15 welcome guide, 16 example gallery, 17 save / open files, 18 joining collinear members when a node is removed, 19 tapered and haunched members, 20 member inspector, 21 member end releases, 22 moving-support ghosts, 23 decluttering (Labels control, load picking, tests), 24 node inspector, inspector tab, theme button and surprising-behaviour examples, 25 mechanism mode, snapshot overlay, mechanism and remarkable-structure examples, 26 integration chain, strain energy, indeterminacy, solve stepper and unit-load method. They share one global scope, so order matters. |
-| `build.mjs` | replaces each marker with the file's contents, verbatim |
+| Merges | Replaces two or more standards. |
+| Splits | Replaced by two or more standards. |
+| Dead ends | Withdrawn or superseded with no recorded or inferred successor. |
+| One-sided links | The link appears on only one of the two records ("Replaced by" without the matching "Replaces", or the reverse). |
+| Coverage gaps | The predecessor was withdrawn more than 6 months before the successor was published. |
+| Transition overlaps | The successor was published more than 6 months before the predecessor was withdrawn, so either could have been used. |
+| Date order | The successor is dated earlier than the standard it replaces. |
+| Orphans | No recorded replacement link in either direction. |
+| Missing fields | A core field is empty or contradictory, e.g. no publication date, "superseded" with no successor, or withdrawn before published. |
 
-## Build
+Each standard's details panel lists its flags in plain language and shows a **record completeness** score.
+
+A flag is a prompt to check, not a finding. Many reflect gaps in the catalogue export, especially before about 1970, and most overlaps are genuine transition periods.
+
+### Fuzzy search (new in v2.3)
+The top search box and the text filter fall back to fuzzy matching when a word has no exact match. Fuzzy matching covers:
+- word endings, such as *beams* → *beam*;
+- close misspellings that occur in the data: one letter off for words of 5 or more letters, two letters off for 8 or more;
+- older or alternative terms, such as *steel / steelwork / iron*, *masonry / brickwork*, *column / stanchion* and *beam / girder / joist*.
+
+Fuzzy results are listed after exact ones and marked **≈**. Numbers and designations always match exactly.
+
+### Details, references and reports
+- The details panel shows dates, status, sector, committee, BSI ID, amendments, abstract, notes, classification and descriptors, plus links to predecessors and successors.
+- **Copy reference** gives a citation for a calculation pack. **Copy link** gives a URL to the selected standard; the URL hash tracks the selected standard, so links can be shared.
+- **Report builder:** add standards to a basket with **+ Add to report**, the **R** key, or *Add filtered standards to report*. Then add project details, an assumed construction year and notes. The report checks whether each standard was in force in that year and names the edition that was. Reports can be printed to PDF or exported as Word, Markdown, HTML or CSV, with lineage diagrams included. Every report records the tool version, the date of application and the data date.
+
+### Other
+- Light and dark themes, both in the cyberpunk style shared with the author's other apps.
+- **Export** downloads the filtered list as CSV, including data-check and completeness columns.
+- **Load CSV** loads a different export with the same columns, processed entirely in the browser.
+- A welcome guide and an About page covering data provenance, how dates are read, and the version history.
+- Preferences such as theme, layout, filters and the report basket are saved in the browser's `localStorage`.
+
+## Keyboard shortcuts
+
+| Key | Action |
+|---|---|
+| `/` | Focus the search box |
+| `F` | Fit the timeline to all years |
+| `L` | Zoom the timeline to the selected lineage |
+| `R` | Add or remove the selected standard from the report |
+| `?` | Open the welcome guide |
+| `Esc` | Close a view or panel |
+
+On the timeline and graph: drag to pan, use Ctrl + scroll or pinch to zoom, and Shift + scroll to move sideways.
+
+## Data
+
+The bundled dataset is an export of the BSI catalogue (BSI Knowledge), last updated 31 October 2026, with 4,053 records. It is embedded in `index.html` as JSON in `<script id="data">`.
+
+To use a different dataset, click **Load CSV**. The file needs at least the `BSI_ID` and `Designation` columns; the full export uses:
 
 ```
-node src/build.mjs frame-pusher.html
+BSI_ID, Designation, Title, Status, Replaced by, Replaces, ICS Classifications, Abstract,
+Publication date, Confirmation date, Withdrawn on, Amended by, Descriptors,
+International relationships, National Committee, International Committee,
+Standard Industry Sector, Notes, Alternate numbers, Author, Affects
 ```
 
-## Workflow
+Notes on parsing:
+- **Dates:** formats such as `16-Dec-35`, `1935-12-16`, `16/12/1935` and `1935` are accepted. For two-digit years, a publication year takes the century closest to the year in the designation; a withdrawal or confirmation year takes the first century on or after the publication year.
+- **Replacement fields:** these can hold BSI IDs or designations, separated by `|`.
+- **ICS classifications:** paths use `>` between levels and `||` between classifications.
 
-Edit a module, rebuild, run the in-app tests (Verification tests in the top bar), then publish the built file as the artifact page (on its own) and save the changed module(s) back to the Project under `frame-pusher-src/`. The built file is what gets downloaded and shared; it needs nothing else. The artifact declares the `downloads` capability (saving model files and PDF reports); a new artifact needs that declaration too.
+## Deployment
 
-The version lives in three places, and `build.mjs` checks that they agree: `VER` at the end of `js/09-help.js`, the `<title>` and the top-bar label in `page.html`. The changelog is `js/10-changelog.js`; the About build date is in `js/11-undo-sections-solver.js`.
+Codex Structura is a single self-contained `index.html`: HTML, CSS, JavaScript and data, with no build step and no dependencies. To deploy:
 
-If the Project copies are ever out of step with the published page, the modules can be recovered from the published page itself: the build inserts each file verbatim, so splitting the page's `<style>` and `<script>` at each module's first line gives the modules back (v2.13 was rebuilt this way, byte for byte, from the v2.12 page). For v2.14 (and v2.15) the page was built the same way from the previous page: `js/09` (which starts at `function showMethod`), `js/10` and `js/11` were swapped for their new versions and the two new files inserted before `</style>` and `</script>`, which is what `build.mjs` produces from the updated `page.html`.
+1. Commit `index.html` to the repository.
+2. Enable **GitHub Pages** for the branch (Settings → Pages).
 
-## Notes by version
+To run it locally, open `index.html` in a browser.
 
-- **v2.4:** rebuilding the v2.3 modules reproduced the v2.3 page byte for byte.
-- **v2.7:** the gallery (`js/16-gallery.js`) reads its groups and order from the Example structures drop-down; give a new example a one-line entry in `GAL_DESC` there.
-- **v2.8:** model files are `{app:'Frame Pusher', format:1, version, saved, name, model}`, where `model` is `dump()` (`js/09-help.js`); `loadDump()` reads it back. `js/17-files.js` also accepts the bare `dump()` text from earlier versions.
-- **v2.8.1:** `js/18-merge.js` wraps `delSel()` (js/05) for the node join and wraps `runTests()` (js/06) to append its own verification tests.
-- **v2.9:** a member's profile is `m.np`, stored by `dump()` as member field 10. Sections keep their plate dimensions in `m.sec.g = {t, d, w}`. `solveCore()` (js/11) divides a non-prismatic member at `segPts(m)` and gives each element `npSeg()` stiffness and `npLd()` self-weight; these and the other solver helpers in `js/19-taper.js` are function declarations because start-up solves before js/19 runs. js/19 also wraps `split`, `swW`, `memStats`, `shapeFill`, `applySec`, `secCalc`, `buildPop`, `rpBlocks` and `runTests`.
-- **v2.9.1:** `m.np` ends may be plate dimensions, `dA` / `dB` (same section type as `m.sec.g`): a taper is `{k:'taper', dB}` with end A = the member's own section; a haunch is `{k:'haunch', dA, la, dB, lb}`. v2.9 depth-ratio fields `ra` / `rb` (and `n` for generic members) are still read. `js/20-inspector.js` adds the member drawing, end conditions, loads and the section editor to the side panel (wraps `sideUpdate`, `buildPop`, `runTests`).
-- **v2.10:** member end releases are `m.ha` (end A) and `m.hb` (end B), true or absent, stored by `dump()` as member field 11 (`[A, B]` as 0 / 1, or 0 for none). `mRel(m, 'a' | 'b')` in js/11 is the one test the solver uses: released when the member flag is set or its node is a hinge (`n.hinge` still means "release every end here"). Each released end gets its own rotation DOF (`m.ra` / `m.rb`, as hinges did); a node's own rotation DOF is fixed only when no unreleased moment-carrying member end meets there. `solveCore` returns `KM.RD`, a map of released-end DOF → `[member index, 'A' | 'B', node]`, and `dg.rnote` (fixed supports that act as pins). `js/21-releases.js` adds the End release tool (Q) after Hinge in the left panel, the inspector toggles (it replaces `insEnd` and wraps `insDiag` and `insUpdate`), the drawing on the canvas (wraps `draw`), report (wraps `rpStructure`, `rpBlocks`) and stiffness matrix labels (wraps `hmLab`), keeps releases through `split`, `mgCheck` / `mgJoin` and the node popup, adds two head-to-head examples and wraps `runTests`. js/09 copies them in `copySel` / `pasteClip`; js/16 draws them in the gallery cards.
-- **v2.11 "Ghost":**
-  - *Moving supports* — `js/22-ghost.js` wraps `drawSpr` (js/12) to call `drawGhosts()`. `ghostList(ds)` lists every support that moves visibly on the current deflection scale `dscale()` (so it follows Diagram scale and Animate). Settled supports are skipped (js/12 already draws them at the settled level). Ghosts are canvas-only; the PDF report is unchanged.
-  - *Initial structure* — the bottom-bar checkbox `#sI` (in `page.html`, before Deflection). `draw()` in js/12 reads it as `SI` and skips the undeformed members, their section labels and the node dots when it is off.
-  - *Unstable warning* — js/12 writes the warning as `<b class="unst"><i class="unstI">⚠</i>…</b>`, and the collapsed Info panel button gets class `unst`. `css/13-v2.11-ghost.css` makes both red with a throbbing icon (off under `prefers-reduced-motion`).
-  - *Home button* — `<a id="home">` before the title in `page.html` links to https://ankacha.github.io/. When the page runs inside a frame, js/22 sets it to open in a new tab.
-- **v2.12 "Clear":** (canvas and report decluttering)
-  - *Canvas labels* — `txt()` in js/12 queues labels while a frame is drawn (`LBL`), with priorities in `LBL.pri`; `drawLoads()` calls `lblFlush()`, which places them with `lblPlace(items, mode, W, H)` (pure, tested). `LBL.mode` is `'all' | 'key' | 'none'`, set by `#lblM` (js/23) and kept in `localStorage['fp.labels']`.
-  - *Point loads* — `plLen(F)` / `plTip(n)` in js/12; js/23 replaces `hitLoad` (js/05) to pick along the drawn arrow.
-  - *Springs* — `sprSym(n)`, `sprKeys()`, `sprLink()` in js/12 draw the compound spring symbol.
-  - *Section names* — `secLab(m)` / `secRuns()` in js/12.
-  - *Report* (`js/13b-report-v2.12.js`, loaded straight after js/13, whose functions of the same name it replaces) — `rpSupMark()`, `rpAmp(F, key)`, `rpGap()`, `rpReac()` / `rpBlock()`, the Output column (wraps `rpBlocks`) and `rpSVG()` text widths.
-  - js/23 appends 21 verification tests (372 in total).
-- **v2.13 "Nodes":** (`js/24-nodes.js`, `css/15-v2.13-nodes.css`)
-  - *Node inspector* — `nodeData(n, r)` (pure, tested) returns, for a solved result `r`, the node's displacements, one entry per element end at the node (`ends`: member, end A / B, internal N, V, M from `e.at()`, the global force the element puts on the joint `g = −Tᵀf` at that end from `nodeElF(e, n)`, the end rotation and whether it is a released-end DOF), the applied load `P`, the support reaction `R` (moment only for a fixed support), the spring force `S`, their sum `sum` and its relative residual `res`, and the node's 3 × 3 block of `KM.K` with the fixed DOFs. `nodeHTML(n)` builds the panel (free-body SVG `nodeSvg`, displacement, equilibrium table, member-end table, K block). It goes in `#sideNode`, inserted before `#sideMain`; `sideUpdate` is wrapped to show it when `interr` is on and a node is selected, to set the panel title (Member / Node inspector) and to show or hide the tab. `buildPop` is wrapped to add the Node inspector tick box to the node popup.
-  - *Inspector tab* — `#sideTab`, a button in `#wrap`, visible while `#side` is hidden; `#wrap.tabOn` moves the dock left to make room. `sideOpen(on)` opens or toggles the panel; key I toggles it (ignored while the guide or gallery is open); `showKeys` is wrapped to list it.
-  - *Theme* — the existing `#theme` button (its click handler is still in js/11) is moved to the end of `#top`, given class `thm` and a sun / moon icon by `thmSync()`; the choice is kept in `localStorage['fp.theme']` and applied at start-up.
-  - *Surprising behaviour* — nine presets `sur_*` in a new optgroup before Head to head, with `GAL_DESC` entries; `galTitle` is wrapped to drop the "Surprise:" prefix in the gallery.
-  - js/24 appends 43 verification tests (415 in total, all passing at release), including joint equilibrium at every node of every example.
-- **v2.14 "Mechanism":** (`js/25-mechanism-snapshot.js`, `css/16-v2.14-mechanism.css`)
-  - *Mechanism mode* — `mechModes(r)` (pure, tested) takes an unsolvable result (`r.ok` false, which still carries `r.KM` and `r.els`) and returns `{modes, n, big}`. It scales the free-DOF block of `KM.K` by `1/√K_ii`, eliminates it symmetrically without row exchanges, and treats a pivot below `MECH_TOL` (1e-9 of its own scaled diagonal) or a zero diagonal as a null pivot: that row is zeroed and skipped. Each null pivot gives one mode by back-substitution with that DOF set to 1 and the other null DOFs 0; the mode is unscaled to physical units, normalised so its largest node translation is 1 (or, if no node moves, its largest rotation × the median element length), and carries `v` (a full-length DOF vector, released-end DOFs included), `node` / `dir` (the most-moving node and 0 = x, 1 = y) and `res`, the zero-energy residual |K v| / (|K| |v|). Above 700 free DOFs it returns `big` and no modes.
-  - *Drawing* — `drawLoads` (js/12) is wrapped: `snapDraw()` before it, then `mechDraw()` and `snapTable()` after it. `mechGet()` caches the modes on `ser()` (the model as JSON), so they are recomputed only when the model changes. `mechElPts(el, v, a)` draws each element with the Hermite cubics (straight for cables). `mechTick` drives the rocking motion with `requestAnimationFrame` at about 30 frames a second while the structure is unstable and the shape is shown, and stops under `prefers-reduced-motion`. The panel is `#mech` in `#wrap` (`#mechT` text, `#mechP` / `#mechN` step, `#mechH` hide / show); the Info panel line is `#read .mechI`.
-  - *Snapshot* — `SNAP.s` holds the pinned results: `snapStats(r)` (pure, tested: `mD`, `mM`, `mV`, `mN`, the largest reaction or spring force `mR`, and the sum of vertical reactions `Ry`), the deflection magnification `DM.k` at the time, the member geometry and every element's sample points `[x, u, v, M, V, N]`. It lives only in memory (not saved, not undone). `snapScale(key)` and `snapDS()` use the live diagrams' own scale (`soft()` with the Diagram scale multipliers), reduced only if the ghost would pass 330 px (diagrams) or 400 px (deflection), which sets `SNAP.red`. Controls `#snapB`, `#snapS` / `#snapC` and `#snapX` are inserted in `#ctb` before Clear loads; the table is `#snapCmp`, after `#read`. `preset()` is wrapped to clear the snapshot and reset the mechanism panel.
-  - *Examples* — seven `mec_*` presets in a Mechanisms optgroup and four `rem_*` presets in a Remarkable structures optgroup, both before Surprising behaviour, with `GAL_DESC` entries; `galTitle` is wrapped to drop the "Mechanism:" and "Head to head:" prefixes in those groups.
-  - *Fix* — `nodeData` is wrapped: when every force at a joint is below 1e-6 kN, the residual is the absolute sum, not the sum divided by a 1e-9 floor.
-  - `#ctb` and `#mech` are centred at `calc(50% − 130px)` to stay clear of `#dock`.
-  - js/25 appends 43 verification tests (458 in total, all passing at release).
-- **v2.15 "Workings":** (`js/26-workings.js`, `css/17-v2.15-workings.css`)
-  - *Shared* — `glInt(L, f)` integrates over an element by 5-point Gauss–Legendre on two halves (exact to degree 9, so M², N², M·m are exact for every load the solver supports). `elSlope(el, x)` is the analytic slope dv/dx (Hermite derivatives plus the particular solution); `elQ` / `elP` give the transverse and axial load intensity.
-  - *Integration chain* — `chainData(m, r)` (pure) samples q, V, M, θ, w along a straight member's elements and returns the integrals `I` and the end-to-end changes `D` of each step; `chainHTML` / `chainSvg` draw it into `#sideIc` (a `<details>` inserted before `#sideSf` in `#sideMain`). `sideUpdate` is wrapped (`icUpdate`), cached on the HTML string.
-  - *Strain energy* — `elEnergy(el)` and `energyOf(r)` (pure: `Ub`, `Ua`, `Us`, `U`, per member `mem`, per element `els` with energy per metre `d`, springs `sp`); `workOf(r)` is ½ the work of nodal loads, element loads (∫q v + p u) and the reactions at settled supports. `#sE` (bottom bar, after Axial) sets `EN.on`; `enDraw()` colours elements with `enColor(t)`, t = √(d / d_max). The Info panel section is `#enS` / `#enSB`.
-  - *Indeterminacy* — `indet(r)` (pure) counts b (3 per beam element, 1 per taut cable), r (support restraints at DOFs a member reaches), kₛ (`KM.sp.size`) and e (distinct DOFs referenced by active elements: all six for a beam, the four translations for a cable), adds the mechanism count from `mechModes` when unstable, and returns `{s, m, nb, nr, ne, nsp, k, ns}`. Section `#indS` / `#indSB`, after Solver status.
-  - *Solve stepper* — `ssBuild(r)` (pure) recomputes from `KM.K`, `KM.F` and `KM.fx` alone: the fixed DOFs and why, `Kff`, `Ff` (with the settlement term), a snapshot of the reduced matrix after every pivot (`steps`, `piv`, `mul`; up to 80 free DOFs, `big` above), forward and back substitution (`Y`, `X`), `u`, reactions `R` and element forces `E`. The panel `#ssOv` is built on first use by `ssOpen()`; `ssRender()` draws the stage `SS.st` (0–5) with `ssMat` / `ssVec` (numbers up to 14 × 14, coloured cells beyond). `#mSs` sits after `#mHm` in the top bar. The panel notes when the model has changed since it was built (`SS.sig` against `ser()`).
-  - *Unit-load method* — `vwCalc(r, n, c)` (pure) solves K_ff u₁ = e with the solver's own factors (`r.M.LU`, same active cable set), takes each element's unit-load end forces f = k T u₁, integrates M m / EI and N n / EA, adds k·u·u₁ for springs and −r₁Δ for imposed settlements, and returns δ with the parts and the solver's `u`. `nodeHTML` is wrapped to append `vwHTML(n)`; clicks on `button[data-vw]` and `input[data-vws]` in `#sideNode` set `VW.c` / `VW.show`. `vwDraw()` draws the unit load and the m diagram.
-  - `drawLoads` is wrapped once more: energy and unit-load drawing before it, the Info panel sections and the stepper's stale note after it. `#ctb` gets `left:max(calc(50% − 130px), 345px)`.
-  - js/26 appends 47 verification tests (505 in total, all passing at release).
+### Analytics
+The page includes the standard Google Tag Manager container snippet (`GTM-WMK9FHGQ`): the script in `<head>` and the `<noscript>` iframe right after `<body>`. Tags are configured in Tag Manager, not in this file.
+
+## Version history
+
+| Version | Date | Changes |
+|---|---|---|
+| v2.3 "Integrity" | 9 Nov 2026 | Checks page with nine lineage and data checks and CSV export. Flags and record completeness in the details panel. Merge, split and dead-end badges and gap, overlap and one-sided labels in the graph. Data-check filter. Fuzzy search. Data-check columns in the CSV export. Tag Manager snippet corrected (12 Nov 2026). |
+| v2.2 "Home" | 9 Nov 2026 | Home button linking to ankacha.github.io (opens in a new tab when embedded in another page). Google Tag Manager added. |
+| v2.1 | 3 Nov 2026 | Welcome guide restyled as an illustrated six-step dialog. Light-mode button styling fixes. |
+| v2.0 | 31 Oct 2026 | Welcome and About pages, version and data stamps, report builder, copyable references, adding filtered sets to the report. |
+| v1.0 | — | Timeline with ICS, date, status and sector filters. Lineage graph, inferred editions, details panel, CSV load and export. |
+
+## Disclaimer
+
+British Standards are available from BSI. Responsibility for the codes used in any design or assessment stays with the engineer.
